@@ -27,7 +27,7 @@ dag = DAG(
 def fetch_data(**kwargs):
     symbols = ['AAPL', 'MSFT', 'GOOGL']
     data = yf.download(symbols, start="2020-01-01", end="2023-01-01")['Adj Close']
-    
+    data.index = data.index.astype(str)
     kwargs['ti'].xcom_push(key='portfolio_data', value=data.to_dict())
     
     return 'Data fetched successfully'
