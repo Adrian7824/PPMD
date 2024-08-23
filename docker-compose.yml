@@ -3,11 +3,11 @@ version: '3.8'
 x-airflow-common:
   &airflow-common
   build:
-  enviorment: &airflow-common-enviorment
+  environment: &airflow-common-environment
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
     AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
-    AIRFLOW__CELERY__BROKE_URL: redis://:@redis:6379/0
+    AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ""
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
     AIRFLOW__CORE__LOAD_EXAMPLES: "false"
@@ -72,8 +72,8 @@ services:
     command: celery worker
     healthcheck:
       test: 
-        - "CDM-SHELL"
-        - 'celery --app airflow.executors.celery_executor.app inspect ping -d "celery@worker_name"'
+        - "CMD-SHELL"
+        - 'celery --app airflow.executors.celery_executor.app inspect ping -d "celery@$(hostname)"'
       interval: 10s
       timeout: 10s
       retries: 5
@@ -83,7 +83,7 @@ services:
     <<: *airflow-common
     command: version
     environment:
-      <<: *airflow-common-env
+      <<: *airflow-common-environment
       _AIRFLOW_DB_UPGRADE: "true"
       _AIRFLOW_WWW_USER_CREATE: "true"
       _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:=airflow}
