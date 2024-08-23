@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 import os
+import shutil
 
 def run_simulation(**kwargs):
     symbols = ['AAPL', 'MSFT', 'GOOGL']
@@ -26,5 +27,5 @@ def run_simulation(**kwargs):
     os.makedirs(output_dir, exist_ok=True)
 
     result_df.to_csv(f'{output_dir}/risk_metrics.csv', index=False)
-
+    shutil.copy('/opt/airflow/data/risk_report.png', 'C:/Users/Adria/Escritorio/Desarollo/airflow-project/reports/risk_report.png')
     return 'Simulation completed successfully'
